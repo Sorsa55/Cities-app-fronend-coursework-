@@ -1,27 +1,30 @@
+import React, { useContext, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { Appbar, Divider, FAB, IconButton, List, Menu, Text } from 'react-native-paper';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import React, { useContext } from 'react';
-import { FlatList, Text, View } from 'react-native';
-import { Appbar, Divider, FAB, IconButton, List, Menu } from 'react-native-paper';
-import { CitiesContext } from '../context/CitiesContext';
-import { LanguageContext } from "../context/LanguageContext";
-
+import { CitiesContext } from '../context/CityContext';
+import { LanguageContext } from '../context/LanguageContext';
+import { Location } from '../types';
+import { HomeStackParamList } from '../navigation/types';
 
 type CityDetailsRouteProp = RouteProp<HomeStackParamList, 'CityDetails'>;
 type CityDetailsNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'CityDetails'>;
 
-export default function CityDetailsScreen({ route, navigation }: { route: CityDetailsRouteProp, navigation: CityDetailsNavigationProp }) {
+export default function CityDetailsScreen() {
     const navigation = useNavigation<CityDetailsNavigationProp>();
     const route = useRoute<CityDetailsRouteProp>();
-    const { cities, locations } = useContext(CitiesContext);
+    const { cities, locations, deleteLocation } = useContext(CitiesContext);
     const { t } = useContext(LanguageContext);
+    const [menuVisible, setMenuVisible] = useState<string | null>(null);
 
-    const { cityId, cityName} = route.params;
-    const city = cities.find(c => c.id === cityId);
-    const cityLocations = locations.filter(location => location.cityId === cityId);
+    const { cityId, cityName } = route.params;
+    const city = cities.find((c) => c.id === cityId);
+    const cityLocations = locations.filter((loc) => loc.cityId === cityId);
 
     const handleEditLocation = (location: Location) => {
         setMenuVisible(null);
-        navigation.navigate("EditLocations", { locationId: location.id, cityName });
+        navigation.navigate('EditLocation', { cityId, cityName, locationId: location.id });
     };
 
     const handleDeleteLocation = (locationId: string) => {
@@ -52,7 +55,7 @@ export default function CityDetailsScreen({ route, navigation }: { route: CityDe
                             leadingIcon="pencil"
                         />
                         <Menu.Item
-                            onPress={()=> handleDeleteLocation(item.id)}
+                            onPress={() => handleDeleteLocation(item.id)}
                             title={t('delete')}
                             leadingIcon="trash"
                             titleStyle={{ color: 'red' }}
@@ -71,26 +74,26 @@ export default function CityDetailsScreen({ route, navigation }: { route: CityDe
                 <Appbar.Content title={cityName} subtitle={city?.country} />
             </Appbar.Header>
 
-        {cityLocations.length === 0 ? (
-            <View style={styles.emptyState}>
-                <Text variant="titleLarge">{t('noLocations')}</Text>
-                <Text variant="bodyMedium" style={styles.emptySubtitle}>
-                    {t('tapToAdd')}
-                </Text>
-            </View>
-        ) : (
-            <FlatList
-                data={cityLocations.sort((a,b) => a.name.localeCompare(b.name))}
-                keyExtractor={(item) => item.id}
-                renderItem={renderLocationItem}
+            {cityLocations.length === 0 ? (
+                <View style={styles.emptyState}>
+                    <Text variant="titleLarge">{t('noLocations')}</Text>
+                    <Text variant="bodyMedium" style={styles.emptySubtitle}>
+                        {t('tapToAdd')}
+                    </Text>
+                </View>
+            ) : (
+                <FlatList
+                    data={[...cityLocations].sort((a, b) => a.name.localeCompare(b.name))}
+                    keyExtractor={(item) => item.id}
+                    renderItem={renderLocationItem}
+                />
+            )}
+            <FAB
+                icon="plus"
+                style={styles.fab}
+                onPress={() => navigation.navigate('AddLocation', { cityId, cityName })}
             />
-        )}
-    <FAB
-        icon="plus"
-        style={styles.fab}
-        onPress={() => navigation.navigate('AddLocation', { cityId, cityName})}
-    />
-    </View>
+        </View>
     );
 }
 
@@ -115,4 +118,3 @@ const styles = StyleSheet.create({
         opacity: 0.7,
     },
 });
-     

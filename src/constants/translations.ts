@@ -1,9 +1,7 @@
-import { version } from "react";
-
-export const translations = {
+export const translations: Record<string, Record<string, string>> = {
     en: {
         homeTitle: 'Cities',
-        info: 'info',
+        info: 'Info',
         addCity: 'Add City',
         editCity: 'Edit City',
         deleteCity: 'Delete City',
@@ -23,14 +21,14 @@ export const translations = {
         edit: 'Edit',
 
         required: 'This field is required',
-        minLength: 'Minimum 2 charecters required',
+        minLength: 'Minimum 2 characters required',
 
         noCities: 'No cities added yet',
         noLocations: 'No locations added yet',
         tapToAdd: 'Tap + to add',
 
-        devolper: 'Developer',
-        version: 'Version', 
+        developer: 'Developer',
+        version: 'Version',
         language: 'Language',
         darkMode: 'Dark Mode',
         settings: 'Settings',
@@ -38,10 +36,13 @@ export const translations = {
 
         deleteConfirm: 'Are you sure you want to delete this item? This action cannot be undone.',
         deleteCityWarning: 'Deleting a city will also delete all its locations.',
+
+        cityNotFound: 'City not found',
+        locationNotFound: 'Location not found',
     },
     fi: {
         homeTitle: 'Kaupungit',
-        info: 'tiedot',
+        info: 'Tiedot',
         addCity: 'Lisää kaupunki',
         editCity: 'Muokkaa kaupunkia',
         deleteCity: 'Poista kaupunki',
@@ -67,14 +68,17 @@ export const translations = {
         noLocations: 'Ei paikkoja lisättynä',
         tapToAdd: 'Napauta + lisätäksesi',
 
-        devolper: 'Kehittäjä',
+        developer: 'Kehittäjä',
         version: 'Versio',
         language: 'Kieli',
         darkMode: 'Tumma tila',
         settings: 'Asetukset',
         about: 'Tietoja',
-    
+
         deleteConfirm: 'Haluatko varmasti poistaa tämän kohteen? Tätä toimintoa ei voi peruuttaa.',
         deleteCityWarning: 'Kaupungin poistaminen poistaa myös kaikki sen paikat.',
-    }
 
+        cityNotFound: 'Kaupunkia ei löytynyt',
+        locationNotFound: 'Paikkaa ei löytynyt',
+    },
+};

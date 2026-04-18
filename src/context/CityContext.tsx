@@ -1,4 +1,5 @@
-import React, { createContext, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { createContext } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { CitiesContextType, City, Location } from '../types';
 import { storage } from '../utils/storage';
@@ -47,10 +48,16 @@ export function CitiesProvider({ children }: CitiesProviderProps) {
         }
     }, [cities, isLoading]);
 
+    useEffect(() => {
+        if (!isLoading) {
+            storage.saveLocations(locations);
+        }
+    }, [locations, isLoading]);
+
     const addCity = useCallback(async (name: string, country: string) => {
         const newCity: City = {
             id: uuidv4(),
-            name: name.trim(), 
+            name: name.trim(),
             country: country.trim(),
             createdAt: Date.now(),
         };
@@ -69,8 +76,7 @@ export function CitiesProvider({ children }: CitiesProviderProps) {
 
     const deleteCity = useCallback((id: string) => {
         setCities((prevCities) => prevCities.filter((city) => city.id !== id));
-        
-        setLocations(prevLocations => prevLocations.filter(location => location.cityId !== id));
+        setLocations((prevLocations) => prevLocations.filter((location) => location.cityId !== id));
     }, []);
 
     const addLocation = useCallback(async (cityId: string, name: string, description: string) => {
@@ -99,7 +105,7 @@ export function CitiesProvider({ children }: CitiesProviderProps) {
     }, []);
 
     const getCityLocations = useCallback((cityId: string) => {
-        return locations.filter(location => location.cityId === cityId);
+        return locations.filter((location) => location.cityId === cityId);
     }, [locations]);
 
     const value: CitiesContextType = {
@@ -119,5 +125,5 @@ export function CitiesProvider({ children }: CitiesProviderProps) {
         <CitiesContext.Provider value={value}>
             {children}
         </CitiesContext.Provider>
-     );
-    }
+    );
+}

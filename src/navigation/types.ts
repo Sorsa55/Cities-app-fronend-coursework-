@@ -5,9 +5,9 @@ export type HomeStackParamList = {
     Home: undefined;
     AddCity: undefined;
     EditCity: { cityId: string };
-    CityDetails: { cityId: string, cityName: string };
-    AddLocation: { cityId: string };
-    EditLocation: { cityId: string, locationId: string };
+    CityDetails: { cityId: string; cityName: string };
+    AddLocation: { cityId: string; cityName: string };
+    EditLocation: { cityId: string; cityName: string; locationId: string };
 };
 
 export type RootTabParamList = {

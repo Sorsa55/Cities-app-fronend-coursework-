@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, useCallback, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { Language, LanguageContextType } from '../types';
-import { translations } from '../utils/translations';
+import { translations } from '../constants/translations';
 
 const LANGUAGE_STORAGE_KEY = 'app_language';
 
@@ -23,7 +23,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         const loadLanguage = async () => {
             try {
                 const storedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
-                if (savedLanguage === 'en' || savedLanguage === 'fi') {
+                if (storedLanguage === 'en' || storedLanguage === 'fi') {
                     setLanguageState(storedLanguage);
                 }
             } catch (error) {
@@ -32,7 +32,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
                 setIsInitialized(true);
             }
         };
-        loadLanguagePreferences();
+        loadLanguage();
     }, []);
 
     const setLanguage = useCallback(async (newLanguage: Language) => {
@@ -43,12 +43,13 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
             console.error('Failed to save language', error);
         }
     }, []);
+
     const t = useCallback((key: string): string => {
         return translations[language][key] || key;
     }, [language]);
 
     if (!isInitialized) {
-        return null; // or a loading spinner
+        return null;
     }
 
     const value: LanguageContextType = {
@@ -56,10 +57,10 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         setLanguage,
         t,
     };
+
     return (
         <LanguageContext.Provider value={value}>
             {children}
         </LanguageContext.Provider>
     );
-
 }

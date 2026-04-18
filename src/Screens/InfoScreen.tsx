@@ -1,14 +1,17 @@
-import React, { use, useContext, version } from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
-import { Card, Divider, List, Switch } from 'react-native-paper';
+import React, { useContext } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Avatar, Card, Divider, List, Switch, Text } from 'react-native-paper';
+import { LanguageContext } from '../context/LanguageContext';
+import { ThemeContext } from '../context/ThemeContext';
+import { Language } from '../types';
 
 export default function InfoScreen() {
-    const { language, setLanguage, t} = useContext(LanguageContext);
+    const { language, setLanguage, t } = useContext(LanguageContext);
     const { isDarkMode, toggleTheme } = useContext(ThemeContext);
 
-    const handleLanguageChange = (lang) => {
+    const handleLanguageChange = (lang: Language) => {
         setLanguage(lang);
-    }
+    };
 
     return (
         <ScrollView style={styles.container}>
@@ -17,7 +20,7 @@ export default function InfoScreen() {
                     <View style={styles.header}>
                         <Avatar.Icon size={64} icon="information" />
                         <Text variant="headlineMedium" style={styles.title}>
-                        City Tracker
+                            City Tracker
                         </Text>
                         <Text variant="bodyLarge" style={styles.version}>
                             v1.0.0
@@ -31,8 +34,8 @@ export default function InfoScreen() {
                 <Card.Content>
                     <List.Item
                         title={t('darkMode')}
-                        left={props => <List.Icon {...props} icon="theme-light-dark" />
-                        right={()=> (
+                        left={(props) => <List.Icon {...props} icon="theme-light-dark" />}
+                        right={() => (
                             <Switch
                                 value={isDarkMode}
                                 onValueChange={toggleTheme}
@@ -43,7 +46,7 @@ export default function InfoScreen() {
                     <List.Item
                         title={t('language')}
                         description={language === 'en' ? 'English' : 'Suomi'}
-                        left={props => <List.Icon {...props} icon="translate" />}
+                        left={(props) => <List.Icon {...props} icon="translate" />}
                     />
                     <View style={styles.languageButtons}>
                         <List.Item
@@ -51,18 +54,18 @@ export default function InfoScreen() {
                             onPress={() => handleLanguageChange('en')}
                             style={[
                                 styles.languageButton,
-                                language === 'en' && styles.languageButtonActive
+                                language === 'en' && styles.activeLanguageButton,
                             ]}
-                            right={props => language === 'en' && <List.Icon {...props} icon="check" />}
+                            right={(props) => language === 'en' ? <List.Icon {...props} icon="check" /> : null}
                         />
                         <List.Item
                             title="Suomi"
-                            onPress={() => handleLanguageChange('fi')
+                            onPress={() => handleLanguageChange('fi')}
                             style={[
                                 styles.languageButton,
-                                language === 'fi' && styles.languageButtonActive
+                                language === 'fi' && styles.activeLanguageButton,
                             ]}
-                            right={props => language === 'fi' && <List.Icon {...props} icon="check" />}
+                            right={(props) => language === 'fi' ? <List.Icon {...props} icon="check" /> : null}
                         />
                     </View>
                 </Card.Content>
@@ -72,22 +75,20 @@ export default function InfoScreen() {
                 <Card.Title title={t('about')} />
                 <Card.Content>
                     <List.Item
-                        title={t('about')}
+                        title={t('developer')}
                         description="Your Name"
-                        left={props => <List.Icon {...props} icon="account" />}
+                        left={(props) => <List.Icon {...props} icon="account" />}
                     />
-                <Divider />
-                <List.Item
-                    title={t('version')}
-                    description="1.0.0"
-                    left={props => <List.Icon {...props} icon="information" />}
-                />
+                    <Divider />
+                    <List.Item
+                        title={t('version')}
+                        description="1.0.0"
+                        left={(props) => <List.Icon {...props} icon="information" />}
+                    />
                 </Card.Content>
             </Card>
         </ScrollView>
-
-      
-     );
+    );
 }
 
 const styles = StyleSheet.create({
@@ -102,9 +103,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 16,
     },
-    avatar: {
-        marginBottom: 16,
-    },
     title: {
         marginBottom: 4,
     },
@@ -118,7 +116,6 @@ const styles = StyleSheet.create({
         marginVertical: 4,
     },
     activeLanguageButton: {
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#54156167',
     },
 });
-    

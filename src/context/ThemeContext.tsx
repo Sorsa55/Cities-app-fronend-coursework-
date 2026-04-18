@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, use } from 'react';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContextType } from '../types';
@@ -7,7 +7,7 @@ const THEME_STORAGE_KEY = 'app_theme';
 
 export const ThemeContext = createContext<ThemeContextType>({
     isDarkMode: false,
-    toggleTheme: async () => {},
+    toggleTheme: () => {},
 });
 
 interface ThemeProviderProps {
@@ -20,12 +20,12 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
-        const loadTheme = async () => {
+        const loadThemePreference = async () => {
             try {
                 const storedTheme = await AsyncStorage.getItem(THEME_STORAGE_KEY);
                 if (storedTheme !== null) {
                     setIsDarkMode(storedTheme === 'dark');
-                } else {    
+                } else {
                     setIsDarkMode(systemColorScheme === 'dark');
                 }
             } catch (error) {
@@ -37,18 +37,18 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         loadThemePreference();
     }, [systemColorScheme]);
 
-    const toggleTheme = async () => {
-        const newTheme = !isDarkMode;
-        setIsDarkMode(newTheme);
-        try {
-            await AsyncStorage.setItem(THEME_STORAGE_KEY, newTheme ? 'dark' : 'light');
-        } catch (error) {
-            console.error('Failed to save theme', error);
-        }
-    }, [isDarkMode]);
+    const toggleTheme = useCallback(() => {
+        setIsDarkMode((prev) => {
+            const newTheme = !prev;
+            AsyncStorage.setItem(THEME_STORAGE_KEY, newTheme ? 'dark' : 'light').catch(
+                (error) => console.error('Failed to save theme', error)
+            );
+            return newTheme;
+        });
+    }, []);
 
     if (!isInitialized) {
-        return null; // or a loading spinner
+        return null;
     }
 
     const value: ThemeContextType = {

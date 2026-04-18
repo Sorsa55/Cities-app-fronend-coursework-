@@ -1,41 +1,41 @@
-import React, { useContext } from "react";
-import { View, FlatList, StyleSheet } from "react-native";
-import { useNavigation } from "expo-router";
-import {FAB, List, IconButton, Menu, Divider, Text } from "react-native-paper";
-import { CitiesContext } from "../context/CitiesContext";
-import {LanguageContext} from "../context/LanguageContext";
-import {City} from "../types";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { HomeStackParamList } from "../navigation/HomeStackNavigator";
+import React, { useContext, useState } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { FAB, IconButton, List, Menu, Divider, Text } from 'react-native-paper';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+import { CitiesContext } from '../context/CityContext';
+import { LanguageContext } from '../context/LanguageContext';
+import { City } from '../types';
+import { HomeStackParamList } from '../navigation/types';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'Home'>;
 
 export default function HomeScreen() {
     const navigation = useNavigation<HomeScreenNavigationProp>();
-    const {cities, locations, deleteCity} = useContext(CitiesContext);
+    const { cities, locations, deleteCity } = useContext(CitiesContext);
     const { t } = useContext(LanguageContext);
-    const [menuVisible, setMenuVisible] = React.useState(false);
+    const [menuVisible, setMenuVisible] = useState<string | null>(null);
 
     const getLocationCount = (cityId: string) => {
-        return locations.filter(location => location.cityId === cityId).length;
+        return locations.filter((location) => location.cityId === cityId).length;
     };
 
     const handleEditCity = (city: City) => {
         setMenuVisible(null);
-        navigation.navigate("EditCity", { cityId: city.id });
+        navigation.navigate('EditCity', { cityId: city.id });
     };
 
-    const handleDeleteCity = (city: City) => {
+    const handleDeleteCity = (cityId: string) => {
         setMenuVisible(null);
-        deleteCity(city.id);
+        deleteCity(cityId);
     };
 
     const renderCityItem = ({ item }: { item: City }) => (
         <View>
             <List.Item
                 title={item.name}
-                description={`${item.country} * ${getLocationCount(item.id)} ${t('locations')}`}
-                onPress={() => navigation.navigate('CityDetails', { cityId: item.id, cityName: item.name})}
+                description={`${item.country} · ${getLocationCount(item.id)} ${t('locations')}`}
+                onPress={() => navigation.navigate('CityDetails', { cityId: item.id, cityName: item.name })}
                 right={() => (
                     <Menu
                         visible={menuVisible === item.id}
@@ -54,7 +54,7 @@ export default function HomeScreen() {
                         />
                         <Menu.Item
                             title={t('delete')}
-                            onPress={() => handleDeleteCity(item)}
+                            onPress={() => handleDeleteCity(item.id)}
                             leadingIcon="trash"
                             titleStyle={{ color: 'red' }}
                         />
@@ -62,22 +62,21 @@ export default function HomeScreen() {
                 )}
             />
             <Divider />
-
         </View>
     );
 
     return (
         <View style={styles.container}>
             {cities.length === 0 ? (
-                <view style={styles.emptyContainer}>
-                    <Text variant="titleLarge">{t('noCities')}</Text
+                <View style={styles.emptyState}>
+                    <Text variant="titleLarge">{t('noCities')}</Text>
                     <Text variant="bodyMedium" style={styles.emptySubtitle}>
                         {t('tapToAdd')}
                     </Text>
-                </view>
+                </View>
             ) : (
                 <FlatList
-                    data={cities.sort((a, b) => a.name.localeCompare(b.name))}
+                    data={[...cities].sort((a, b) => a.name.localeCompare(b.name))}
                     keyExtractor={(item) => item.id}
                     renderItem={renderCityItem}
                 />
@@ -86,7 +85,7 @@ export default function HomeScreen() {
                 style={styles.fab}
                 icon="plus"
                 onPress={() => navigation.navigate('AddCity')}
-                />
+            />
         </View>
     );
 }

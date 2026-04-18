@@ -26,7 +26,7 @@ export interface CitiesContextType {
     isLoading: boolean;
 }
 
-export type Language = 'en' | 'fi' ;
+export type Language = 'en' | 'fi';
 
 export interface LanguageContextType {
     language: Language;

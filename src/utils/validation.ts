@@ -1,4 +1,4 @@
-export const validateCity = (name: string, country: string): string => {
+export const validateCity = (name: string, country: string): string | null => {
     const trimmedName = name.trim();
     const trimmedCountry = country.trim();
 
@@ -7,11 +7,11 @@ export const validateCity = (name: string, country: string): string => {
     }
     if (trimmedName.length < 2) {
         return 'City name must be at least 2 characters long';
-    } 
+    }
     if (trimmedName.length > 50) {
         return 'City name cannot be longer than 50 characters';
     }
-    if(!trimmedCountry) {
+    if (!trimmedCountry) {
         return 'Country cannot be empty';
     }
     if (trimmedCountry.length < 2) {
@@ -23,7 +23,7 @@ export const validateCity = (name: string, country: string): string => {
     return null;
 };
 
-export const validateLocation = (name: string, description: string): string => {
+export const validateLocation = (name: string, description: string): string | null => {
     const trimmedName = name.trim();
     const trimmedDescription = description.trim();
 
@@ -42,8 +42,8 @@ export const validateLocation = (name: string, description: string): string => {
     if (trimmedDescription.length < 10) {
         return 'Description must be at least 10 characters long';
     }
-    if (trimmedDescription.length > 50) {
+    if (trimmedDescription.length > 500) {
         return 'Description cannot be longer than 500 characters';
     }
     return null;
-};  
+};
